@@ -1,10 +1,17 @@
+import { useState } from 'react'
+import Navbar from './components/Navbar'
 import './App.css'
 
 function App() {
+  const [isDark, setIsDark] = useState(true)
+
+  const themeClassName = isDark ? 'theme-dark' : 'theme-light'
+  const toggleTheme = () => setIsDark((previousValue) => !previousValue)
+
   return (
-    <main className="app-shell">
-      <h1>StockFlow</h1>
-    </main>
+    <div className={`app-shell ${themeClassName}`}>
+      <Navbar isDark={isDark} onToggleTheme={toggleTheme} />
+    </div>
   )
 }
 
