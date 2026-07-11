@@ -94,7 +94,7 @@
 
 .products-table {
   width: 100%;
-  min-width: 880px;
+  min-width: 980px;
   border-collapse: collapse;
   color: var(--panel-text);
 }
@@ -133,6 +133,28 @@
 .stock-badge.out {
   background: #fef3f2;
   color: #d92d20;
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.row-actions button {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 12px;
+  background: var(--panel-bg);
+  color: var(--panel-text);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.row-actions button:hover {
+  background: var(--soft-bg);
 }
 
 .empty-state {
@@ -320,6 +342,10 @@
     color: var(--muted);
     font-weight: 800;
     text-align: left;
+  }
+
+  .row-actions {
+    justify-content: flex-end;
   }
 
   .product-modal {

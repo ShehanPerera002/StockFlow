@@ -34,6 +34,7 @@ function ProductTable() {
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [stockFilter, setStockFilter] = useState('all')
   const [isProductModalOpen, setIsProductModalOpen] = useState(false)
+  const [editingProduct, setEditingProduct] = useState(null)
 
   const filteredProducts = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase()
@@ -53,7 +54,38 @@ function ProductTable() {
     })
   }, [categoryFilter, products, searchTerm, stockFilter])
 
-  const addProduct = (values) => {
+  const openAddProduct = () => {
+    setEditingProduct(null)
+    setIsProductModalOpen(true)
+  }
+
+  const openEditProduct = (product) => {
+    setEditingProduct(product)
+    setIsProductModalOpen(true)
+  }
+
+  const closeProductModal = () => {
+    setEditingProduct(null)
+    setIsProductModalOpen(false)
+  }
+
+  const saveProduct = (values) => {
+    if (editingProduct) {
+      const updatedProduct = {
+        ...editingProduct,
+        name: values.name.trim(),
+        category: values.category,
+        price: Number(values.price),
+        stock: Number(values.stock),
+      }
+
+      setProducts((currentProducts) =>
+        currentProducts.map((product) => (product.id === editingProduct.id ? updatedProduct : product)),
+      )
+      closeProductModal()
+      return
+    }
+
     const newProduct = {
       id: generateProductId(products),
       name: values.name.trim(),
@@ -63,8 +95,21 @@ function ProductTable() {
     }
 
     setProducts((currentProducts) => [...currentProducts, newProduct])
-    setIsProductModalOpen(false)
+    closeProductModal()
   }
+
+  const deleteProduct = (productId) => {
+    setProducts((currentProducts) => currentProducts.filter((product) => product.id !== productId))
+  }
+
+  const productFormValues = editingProduct
+    ? {
+        name: editingProduct.name,
+        category: editingProduct.category,
+        price: editingProduct.price,
+        stock: editingProduct.stock,
+      }
+    : productInitialValues
 
   return (
     <section className="products-section">
@@ -73,7 +118,7 @@ function ProductTable() {
           <h1>Products</h1>
           <p>{filteredProducts.length} of {products.length} shown</p>
         </div>
-        <button type="button" className="add-product-button" onClick={() => setIsProductModalOpen(true)}>
+        <button type="button" className="add-product-button" onClick={openAddProduct}>
           Add Product
         </button>
       </div>
@@ -124,6 +169,7 @@ function ProductTable() {
               <th>Price</th>
               <th>Stock</th>
               <th>Value</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -139,6 +185,16 @@ function ProductTable() {
                   </span>
                 </td>
                 <td data-label="Value">{formatLkr(product.price * product.stock)}</td>
+                <td data-label="Actions">
+                  <div className="row-actions">
+                    <button type="button" onClick={() => openEditProduct(product)}>
+                      Edit
+                    </button>
+                    <button type="button" onClick={() => deleteProduct(product.id)}>
+                      Delete
+                    </button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -155,20 +211,25 @@ function ProductTable() {
       {isProductModalOpen && (
         <div className="modal-backdrop" role="presentation">
           <Formik
-            initialValues={productInitialValues}
+            initialValues={productFormValues}
             validationSchema={productSchema}
-            onSubmit={addProduct}
+            enableReinitialize
+            onSubmit={saveProduct}
           >
             <Form className="product-modal" aria-labelledby="product-modal-title">
               <div className="modal-header">
                 <div>
-                  <h2 id="product-modal-title">Add new product</h2>
-                  <p>A unique Product ID will be generated automatically.</p>
+                  <h2 id="product-modal-title">{editingProduct ? 'Edit product' : 'Add new product'}</h2>
+                  <p>
+                    {editingProduct
+                      ? `Editing ${editingProduct.id}.`
+                      : 'A unique Product ID will be generated automatically.'}
+                  </p>
                 </div>
                 <button
                   type="button"
                   className="close-button"
-                  onClick={() => setIsProductModalOpen(false)}
+                  onClick={closeProductModal}
                   aria-label="Close product form"
                 >
                   ×
@@ -209,11 +270,11 @@ function ProductTable() {
               </div>
 
               <div className="modal-footer">
-                <button type="button" className="cancel-button" onClick={() => setIsProductModalOpen(false)}>
+                <button type="button" className="cancel-button" onClick={closeProductModal}>
                   Cancel
                 </button>
                 <button type="submit" className="submit-button">
-                  Create product
+                  {editingProduct ? 'Save changes' : 'Create product'}
                 </button>
               </div>
             </Form>
