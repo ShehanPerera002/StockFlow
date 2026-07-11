@@ -46,11 +46,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: stockflow-dist
-          path: stockflow/dist
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Deploy production site
-        run: npx netlify-cli deploy --prod --dir=stockflow/dist --site=${{ secrets.NETLIFY_SITE_ID }} --auth=${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: npx netlify-cli deploy --prod --build --site=${{ secrets.NETLIFY_SITE_ID }} --auth=${{ secrets.NETLIFY_AUTH_TOKEN }}
