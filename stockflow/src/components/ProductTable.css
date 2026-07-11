@@ -21,7 +21,14 @@
   color: var(--muted);
 }
 
+.products-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .add-product-button,
+.secondary-button,
 .submit-button {
   min-height: 42px;
   border: 0;
@@ -32,6 +39,12 @@
   cursor: pointer;
   font: inherit;
   font-weight: 800;
+}
+
+.secondary-button {
+  border: 1px solid var(--line);
+  background: var(--panel-bg);
+  color: var(--panel-text);
 }
 
 .products-toolbar {
@@ -278,6 +291,11 @@
     flex-direction: column;
   }
 
+  .products-actions {
+    flex-direction: column;
+  }
+
+  .secondary-button,
   .add-product-button {
     width: 100%;
   }

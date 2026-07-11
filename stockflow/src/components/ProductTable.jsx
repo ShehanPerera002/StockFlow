@@ -103,6 +103,28 @@ function ProductTable() {
     setProducts((currentProducts) => currentProducts.filter((product) => product.id !== productId))
   }
 
+  const exportCsv = () => {
+    const headers = ['Product ID', 'Product Name', 'Category', 'Price', 'Stock Quantity', 'Inventory Value']
+    const rows = products.map((product) => [
+      product.id,
+      product.name,
+      product.category,
+      product.price,
+      product.stock,
+      product.price * product.stock,
+    ])
+    const csv = [headers, ...rows]
+      .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(','))
+      .join('\n')
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }))
+    const link = document.createElement('a')
+
+    link.href = url
+    link.download = 'stockflow-products.csv'
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   const productFormValues = editingProduct
     ? {
         name: editingProduct.name,
@@ -119,9 +141,14 @@ function ProductTable() {
           <h1>Products</h1>
           <p>{filteredProducts.length} of {products.length} shown</p>
         </div>
-        <button type="button" className="add-product-button" onClick={openAddProduct}>
-          Add Product
-        </button>
+        <div className="products-actions">
+          <button type="button" className="secondary-button" onClick={exportCsv}>
+            Export CSV
+          </button>
+          <button type="button" className="add-product-button" onClick={openAddProduct}>
+            Add Product
+          </button>
+        </div>
       </div>
 
       <div className="products-toolbar">
