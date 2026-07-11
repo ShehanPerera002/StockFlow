@@ -76,4 +76,5 @@ npm run build
 - Light and dark theme toggle
 - Responsive layout for desktop and mobile
 
+<img width="1901" height="1031" alt="Screenshot 2026-07-11 125936" src="https://github.com/user-attachments/assets/c8299d2e-427f-4e5c-9192-4763a7c0b7f1" />
 
