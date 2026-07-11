@@ -7,10 +7,9 @@ import './App.css'
 function App() {
   const [activePage, setActivePage] = useState('home')
   const [isDark, setIsDark] = useState(false)
-  const themeClassName = isDark ? 'theme-dark' : 'theme-light'
 
   return (
-    <div className={`app-shell ${themeClassName}`}>
+    <div className={`app-shell${isDark ? ' theme-dark' : ''}`}>
       <Navbar
         activePage={activePage}
         isDark={isDark}

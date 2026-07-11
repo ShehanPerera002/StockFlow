@@ -1,7 +1,5 @@
 export const PRODUCTS_STORAGE_KEY = 'stockflow-products'
 export const CATEGORIES_STORAGE_KEY = 'stockflow-categories'
-export const HISTORY_STORAGE_KEY = 'stockflow-stock-history'
-export const THEME_STORAGE_KEY = 'stockflow-theme'
 
 export const defaultCategories = ['Electronics', 'Apparel', 'Home & Kitchen', 'Groceries']
 
@@ -37,53 +35,4 @@ export function generateProductId(products) {
   } while (products.some((product) => product.id === id))
 
   return id
-}
-
-export function createActivity(type, details = {}) {
-  return {
-    id: `${type}-${Date.now()}`,
-    type,
-    timestamp: new Date().toISOString(),
-    ...details,
-  }
-}
-
-export function formatActivityText(entry) {
-  if (entry.type === 'incoming') {
-    return `Restocked ${entry.quantity}`
-  }
-
-  if (entry.type === 'outgoing') {
-    return `Sold ${entry.quantity}`
-  }
-
-  if (entry.type === 'product-added') {
-    return 'Product added'
-  }
-
-  if (entry.type === 'product-updated') {
-    return 'Product updated'
-  }
-
-  if (entry.type === 'product-deleted') {
-    return 'Product deleted'
-  }
-
-  if (entry.type === 'category-added') {
-    return 'Category added'
-  }
-
-  return 'Activity recorded'
-}
-
-export function getActivityTitle(entry) {
-  return entry.productName || entry.categoryName || 'Inventory'
-}
-
-export function formatActivityTime(timestamp) {
-  if (!timestamp) {
-    return ''
-  }
-
-  return new Date(timestamp).toLocaleString()
 }

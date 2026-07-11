@@ -141,18 +141,6 @@
   opacity: 1;
 }
 
-.theme-light .switch-thumb {
-  left: 4px;
-}
-
-.theme-light .sun-icon {
-  opacity: 1;
-}
-
-.theme-light .moon-icon {
-  opacity: 0;
-}
-
 @media (max-width: 700px) {
   .app-header {
     grid-template-columns: 1fr auto;

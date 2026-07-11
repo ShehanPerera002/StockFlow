@@ -1,22 +1,27 @@
-.products-section {
+.products-panel {
+  --table-line: #e5eaf2;
   display: grid;
-  gap: 24px;
+  gap: 22px;
 }
 
-.products-header {
+.theme-dark .products-panel {
+  --table-line: #2b3748;
+}
+
+.products-heading {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
 }
 
-.products-header h1 {
+.products-heading h1 {
   margin: 0 0 6px;
   font-size: clamp(2rem, 4vw, 2.5rem);
   font-weight: 800;
 }
 
-.products-header p {
+.products-heading p {
   margin: 0;
   color: var(--muted);
 }
@@ -27,21 +32,25 @@
   gap: 10px;
 }
 
-.add-product-button,
-.secondary-button,
+.primary-action,
+.secondary-action,
 .submit-button {
   min-height: 42px;
   border: 0;
   border-radius: 8px;
   padding: 0 16px;
-  background: var(--panel-text);
-  color: var(--panel-bg);
-  cursor: pointer;
   font: inherit;
   font-weight: 800;
+  cursor: pointer;
 }
 
-.secondary-button {
+.primary-action,
+.submit-button {
+  background: var(--panel-text);
+  color: var(--panel-bg);
+}
+
+.secondary-action {
   border: 1px solid var(--line);
   background: var(--panel-bg);
   color: var(--panel-text);
@@ -49,28 +58,49 @@
 
 .products-toolbar {
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) 190px auto;
+  grid-template-columns: minmax(280px, 1fr) 210px auto;
   gap: 12px;
 }
 
-.products-toolbar input,
-.products-toolbar select,
+.search-field,
+.category-select,
 .stock-filter {
-  min-height: 44px;
+  min-height: 46px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--panel-bg);
   color: var(--panel-text);
-  font: inherit;
 }
 
-.products-toolbar input,
-.products-toolbar select {
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 0 14px;
 }
 
-.products-toolbar input::placeholder {
+.search-field span {
   color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.search-field input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--panel-text);
+  font: inherit;
+}
+
+.search-field input::placeholder {
+  color: var(--muted);
+}
+
+.category-select {
+  padding: 0 14px;
+  font: inherit;
 }
 
 .stock-filter {
@@ -81,33 +111,33 @@
 }
 
 .stock-filter button {
-  min-height: 34px;
+  min-height: 36px;
   border: 0;
   border-radius: 8px;
   padding: 0 12px;
   background: transparent;
   color: var(--muted);
-  cursor: pointer;
   font: inherit;
-  font-weight: 700;
+  font-weight: 800;
+  cursor: pointer;
 }
 
-.stock-filter button.active {
+.stock-filter button.is-active {
   background: var(--panel-text);
   color: var(--panel-bg);
 }
 
-.table-card {
+.products-table-wrap {
   overflow-x: auto;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--table-line);
+  border-radius: 12px;
   background: var(--panel-bg);
   box-shadow: var(--shadow-card);
 }
 
 .products-table {
   width: 100%;
-  min-width: 980px;
+  min-width: 1180px;
   border-collapse: collapse;
   color: var(--panel-text);
 }
@@ -115,35 +145,70 @@
 .products-table th,
 .products-table td {
   padding: 16px 18px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--table-line);
+  border-right: 1px solid var(--table-line);
   text-align: left;
+  vertical-align: middle;
 }
 
 .products-table th {
   background: var(--soft-bg);
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
+}
+
+.products-table th:last-child,
+.products-table td:last-child {
+  border-right: 0;
 }
 
 .products-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
-.stock-badge {
-  display: inline-flex;
-  min-width: 42px;
-  min-height: 28px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: #ecfdf3;
-  color: #027a48;
+.products-table tbody tr:hover {
+  background: var(--soft-bg);
+}
+
+.sku-cell {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.name-cell {
   font-weight: 800;
 }
 
-.stock-badge.out {
+.category-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0 12px;
+  background: var(--panel-bg);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.stock-cell span {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.stock-cell.in-stock span {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+.stock-cell.out-of-stock span {
   background: #fef3f2;
   color: #d92d20;
 }
@@ -152,22 +217,35 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
-.row-actions button {
+.text-action {
   min-height: 34px;
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 0 12px;
   background: var(--panel-bg);
   color: var(--panel-text);
-  cursor: pointer;
   font: inherit;
-  font-weight: 700;
+  font-weight: 800;
+  cursor: pointer;
 }
 
-.row-actions button:hover {
+.text-action:hover {
   background: var(--soft-bg);
+}
+
+.restock-action {
+  color: #027a48;
+}
+
+.sell-action {
+  color: #b54708;
+}
+
+.danger-action {
+  color: #d92d20;
 }
 
 .empty-state {
@@ -204,6 +282,10 @@
   background: var(--panel-bg);
   color: var(--panel-text);
   box-shadow: 0 26px 70px rgba(15, 23, 42, 0.22);
+}
+
+.compact-modal {
+  width: min(460px, 100%);
 }
 
 .modal-header {
@@ -286,7 +368,7 @@
 }
 
 @media (max-width: 900px) {
-  .products-header {
+  .products-heading {
     align-items: stretch;
     flex-direction: column;
   }
@@ -295,8 +377,8 @@
     flex-direction: column;
   }
 
-  .secondary-button,
-  .add-product-button {
+  .primary-action,
+  .secondary-action {
     width: 100%;
   }
 
@@ -314,7 +396,7 @@
 }
 
 @media (max-width: 640px) {
-  .table-card {
+  .products-table-wrap {
     overflow: visible;
     border: 0;
     background: transparent;
@@ -341,7 +423,7 @@
     margin-bottom: 14px;
     overflow: hidden;
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: 12px;
     background: var(--panel-bg);
     box-shadow: var(--shadow-card);
   }
