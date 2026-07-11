@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Navbar from './components/Navbar'
 import Dashboard from './components/Dashboard'
+import ProductTable from './components/ProductTable'
 import './App.css'
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       />
       <main className="main-content">
         {activePage === 'home' && <Dashboard />}
+        {activePage === 'products' && <ProductTable />}
       </main>
     </div>
   )
