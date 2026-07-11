@@ -76,5 +76,26 @@ npm run build
 - Light and dark theme toggle
 - Responsive layout for desktop and mobile
 
+
+----- Screenshots -----
+
+1.DashBoard
+
 <img width="1901" height="1031" alt="Screenshot 2026-07-11 125936" src="https://github.com/user-attachments/assets/c8299d2e-427f-4e5c-9192-4763a7c0b7f1" />
+
+2.Products
+
+<img width="1918" height="1028" alt="Screenshot 2026-07-11 130442" src="https://github.com/user-attachments/assets/5cf2b40c-db5b-4c7d-9958-14c301ad66e9" />
+
+3.Add Product
+
+<img width="698" height="617" alt="Screenshot 2026-07-11 130904" src="https://github.com/user-attachments/assets/f08ed1f0-051b-4a9b-9d56-81eea4021e9c" />
+
+
+
+
+
+
+
+
 
