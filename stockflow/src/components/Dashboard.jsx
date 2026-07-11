@@ -2,16 +2,21 @@ import { useMemo } from 'react'
 import useLocalStorage from '../hooks/useLocalStorage'
 import {
   CATEGORIES_STORAGE_KEY,
+  HISTORY_STORAGE_KEY,
   PRODUCTS_STORAGE_KEY,
   defaultCategories,
   defaultProducts,
+  formatActivityText,
+  formatActivityTime,
   formatLkr,
+  getActivityTitle,
 } from '../utils/inventory'
 import './Dashboard.css'
 
 function Dashboard() {
   const [products] = useLocalStorage(PRODUCTS_STORAGE_KEY, defaultProducts)
   const [categories] = useLocalStorage(CATEGORIES_STORAGE_KEY, defaultCategories)
+  const [activityLog] = useLocalStorage(HISTORY_STORAGE_KEY, [])
 
   const stats = useMemo(() => {
     const totalStock = products.reduce((total, product) => total + product.stock, 0)
@@ -57,21 +62,46 @@ function Dashboard() {
         ))}
       </div>
 
-      <section className="category-summary" aria-labelledby="category-summary-title">
-        <div className="section-heading">
-          <h2 id="category-summary-title">Products by category</h2>
-          <p>Quick count of inventory groups.</p>
-        </div>
+      <div className="dashboard-details">
+        <section className="dashboard-panel" aria-labelledby="category-summary-title">
+          <div className="section-heading">
+            <h2 id="category-summary-title">Products by category</h2>
+            <p>Quick count of inventory groups.</p>
+          </div>
 
-        <div className="category-list">
-          {categoryCounts.map((category) => (
-            <div className="category-row" key={category.name}>
-              <span>{category.name}</span>
-              <strong>{category.count}</strong>
+          <div className="category-list">
+            {categoryCounts.map((category) => (
+              <div className="category-row" key={category.name}>
+                <span>{category.name}</span>
+                <strong>{category.count}</strong>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="dashboard-panel" aria-labelledby="activity-title">
+          <div className="section-heading">
+            <h2 id="activity-title">Activity history</h2>
+            <p>Latest inventory updates with timestamps.</p>
+          </div>
+
+          {activityLog.length === 0 ? (
+            <p className="empty-dashboard-text">No activity recorded yet.</p>
+          ) : (
+            <div className="activity-list">
+              {activityLog.slice(0, 5).map((entry) => (
+                <div className="activity-row" key={entry.id}>
+                  <div>
+                    <strong>{getActivityTitle(entry)}</strong>
+                    <span>{formatActivityText(entry)}</span>
+                  </div>
+                  <time>{formatActivityTime(entry.timestamp)}</time>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
+          )}
+        </section>
+      </div>
     </section>
   )
 }

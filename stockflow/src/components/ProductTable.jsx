@@ -4,7 +4,9 @@ import * as Yup from 'yup'
 import useLocalStorage from '../hooks/useLocalStorage'
 import {
   CATEGORIES_STORAGE_KEY,
+  HISTORY_STORAGE_KEY,
   PRODUCTS_STORAGE_KEY,
+  createActivity,
   defaultCategories,
   defaultProducts,
   formatLkr,
@@ -42,6 +44,7 @@ const productSchema = Yup.object({
 function ProductTable() {
   const [products, setProducts] = useLocalStorage(PRODUCTS_STORAGE_KEY, defaultProducts)
   const [categories, setCategories] = useLocalStorage(CATEGORIES_STORAGE_KEY, defaultCategories)
+  const [, setActivityLog] = useLocalStorage(HISTORY_STORAGE_KEY, [])
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [stockFilter, setStockFilter] = useState('all')
@@ -106,6 +109,10 @@ function ProductTable() {
       .required('Quantity is required'),
   })
 
+  const addActivity = (type, details) => {
+    setActivityLog((currentLog) => [createActivity(type, details), ...currentLog.slice(0, 19)])
+  }
+
   const openAddProduct = () => {
     setEditingProduct(null)
     setProductModalMode('add')
@@ -134,6 +141,10 @@ function ProductTable() {
       setProducts((currentProducts) =>
         currentProducts.map((product) => (product.id === editingProduct.id ? updatedProduct : product)),
       )
+      addActivity('product-updated', {
+        productId: updatedProduct.id,
+        productName: updatedProduct.name,
+      })
       closeProductModal()
       return
     }
@@ -147,17 +158,26 @@ function ProductTable() {
     }
 
     setProducts((currentProducts) => [...currentProducts, newProduct])
+    addActivity('product-added', {
+      productId: newProduct.id,
+      productName: newProduct.name,
+    })
     closeProductModal()
   }
 
   const deleteProduct = (product) => {
     setProducts((currentProducts) => currentProducts.filter((item) => item.id !== product.id))
+    addActivity('product-deleted', {
+      productId: product.id,
+      productName: product.name,
+    })
   }
 
   const saveCategory = (values, helpers) => {
     const categoryName = values.name.trim()
 
     setCategories((currentCategories) => [...currentCategories, categoryName])
+    addActivity('category-added', { categoryName })
     helpers.resetForm()
     setIsCategoryModalOpen(false)
   }
@@ -171,6 +191,11 @@ function ProductTable() {
     setProducts((currentProducts) =>
       currentProducts.map((item) => (item.id === product.id ? { ...item, stock: nextStock } : item)),
     )
+    addActivity(stockModal.type, {
+      productId: product.id,
+      productName: product.name,
+      quantity,
+    })
     helpers.resetForm()
     setStockModal(null)
   }
