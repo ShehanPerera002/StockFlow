@@ -1,22 +1,44 @@
+import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { useMemo, useState } from 'react'
-import { defaultCategories, defaultProducts, formatLkr } from '../utils/inventory'
+import * as Yup from 'yup'
+import { defaultCategories, defaultProducts, formatLkr, generateProductId } from '../utils/inventory'
 import './ProductTable.css'
 
+const productInitialValues = { name: '', category: '', price: '', stock: '' }
 const stockFilters = [
   { value: 'all', label: 'All' },
   { value: 'in-stock', label: 'In stock' },
   { value: 'out-of-stock', label: 'Out of stock' },
 ]
 
+const productSchema = Yup.object({
+  name: Yup.string()
+    .trim()
+    .min(2, 'Product name must be at least 2 characters')
+    .required('Product name is required'),
+  category: Yup.string().required('Category is required'),
+  price: Yup.number()
+    .typeError('Price must be a number')
+    .min(0, 'Price cannot be negative')
+    .required('Price is required'),
+  stock: Yup.number()
+    .typeError('Stock must be a number')
+    .integer('Stock must be a whole number')
+    .min(0, 'Stock cannot be negative')
+    .required('Stock quantity is required'),
+})
+
 function ProductTable() {
+  const [products, setProducts] = useState(defaultProducts)
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [stockFilter, setStockFilter] = useState('all')
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false)
 
   const filteredProducts = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase()
 
-    return defaultProducts.filter((product) => {
+    return products.filter((product) => {
       const matchesSearch =
         !normalizedSearch ||
         product.name.toLowerCase().includes(normalizedSearch) ||
@@ -29,15 +51,31 @@ function ProductTable() {
 
       return matchesSearch && matchesCategory && matchesStock
     })
-  }, [categoryFilter, searchTerm, stockFilter])
+  }, [categoryFilter, products, searchTerm, stockFilter])
+
+  const addProduct = (values) => {
+    const newProduct = {
+      id: generateProductId(products),
+      name: values.name.trim(),
+      category: values.category,
+      price: Number(values.price),
+      stock: Number(values.stock),
+    }
+
+    setProducts((currentProducts) => [...currentProducts, newProduct])
+    setIsProductModalOpen(false)
+  }
 
   return (
     <section className="products-section">
       <div className="products-header">
         <div>
           <h1>Products</h1>
-          <p>{filteredProducts.length} of {defaultProducts.length} shown</p>
+          <p>{filteredProducts.length} of {products.length} shown</p>
         </div>
+        <button type="button" className="add-product-button" onClick={() => setIsProductModalOpen(true)}>
+          Add Product
+        </button>
       </div>
 
       <div className="products-toolbar">
@@ -113,6 +151,75 @@ function ProductTable() {
           </div>
         )}
       </div>
+
+      {isProductModalOpen && (
+        <div className="modal-backdrop" role="presentation">
+          <Formik
+            initialValues={productInitialValues}
+            validationSchema={productSchema}
+            onSubmit={addProduct}
+          >
+            <Form className="product-modal" aria-labelledby="product-modal-title">
+              <div className="modal-header">
+                <div>
+                  <h2 id="product-modal-title">Add new product</h2>
+                  <p>A unique Product ID will be generated automatically.</p>
+                </div>
+                <button
+                  type="button"
+                  className="close-button"
+                  onClick={() => setIsProductModalOpen(false)}
+                  aria-label="Close product form"
+                >
+                  ×
+                </button>
+              </div>
+
+              <label className="form-field">
+                <span>Product name</span>
+                <Field name="name" placeholder="e.g. Wireless Headphones" autoFocus />
+                <ErrorMessage name="name" component="small" />
+              </label>
+
+              <label className="form-field">
+                <span>Category</span>
+                <Field as="select" name="category">
+                  <option value="">Select category...</option>
+                  {defaultCategories.map((category) => (
+                    <option value={category} key={category}>
+                      {category}
+                    </option>
+                  ))}
+                </Field>
+                <ErrorMessage name="category" component="small" />
+              </label>
+
+              <div className="form-grid">
+                <label className="form-field">
+                  <span>Price (LKR)</span>
+                  <Field name="price" type="number" min="0" step="0.01" />
+                  <ErrorMessage name="price" component="small" />
+                </label>
+
+                <label className="form-field">
+                  <span>Stock qty</span>
+                  <Field name="stock" type="number" min="0" step="1" />
+                  <ErrorMessage name="stock" component="small" />
+                </label>
+              </div>
+
+              <div className="modal-footer">
+                <button type="button" className="cancel-button" onClick={() => setIsProductModalOpen(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="submit-button">
+                  Create product
+                </button>
+              </div>
+            </Form>
+          </Formik>
+        </div>
+      )}
     </section>
   )
 }
