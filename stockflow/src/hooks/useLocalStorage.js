@@ -5,7 +5,11 @@ function useLocalStorage(key, initialValue) {
   const [value, setValue] = useState(() => readStorage(key, initialValue))
 
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value))
+    try {
+      localStorage.setItem(key, JSON.stringify(value))
+    } catch {
+      return
+    }
   }, [key, value])
 
   return [value, setValue]

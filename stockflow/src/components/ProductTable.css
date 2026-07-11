@@ -236,6 +236,15 @@
   background: var(--soft-bg);
 }
 
+.text-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.text-action:disabled:hover {
+  background: var(--panel-bg);
+}
+
 .restock-action {
   color: #027a48;
 }

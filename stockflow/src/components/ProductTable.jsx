@@ -80,34 +80,42 @@ function ProductTable() {
       }
     : productInitialValues
 
-  const categorySchema = Yup.object({
-    name: Yup.string()
-      .trim()
-      .min(2, 'Category must be at least 2 characters')
-      .test('unique-category', 'Category already exists', (value) => {
-        if (!value) {
-          return true
-        }
+  const categorySchema = useMemo(
+    () =>
+      Yup.object({
+        name: Yup.string()
+          .trim()
+          .min(2, 'Category must be at least 2 characters')
+          .test('unique-category', 'Category already exists', (value) => {
+            if (!value) {
+              return true
+            }
 
-        return !categories.some((category) => category.toLowerCase() === value.trim().toLowerCase())
-      })
-      .required('Category name is required'),
-  })
+            return !categories.some((category) => category.toLowerCase() === value.trim().toLowerCase())
+          })
+          .required('Category name is required'),
+      }),
+    [categories],
+  )
 
-  const stockSchema = Yup.object({
-    quantity: Yup.number()
-      .typeError('Quantity must be a number')
-      .integer('Quantity must be a whole number')
-      .min(1, 'Quantity must be at least 1')
-      .test('available-stock', 'Cannot sell more than current stock', (value) => {
-        if (!stockModal || stockModal.type !== 'outgoing' || !value) {
-          return true
-        }
+  const stockSchema = useMemo(
+    () =>
+      Yup.object({
+        quantity: Yup.number()
+          .typeError('Quantity must be a number')
+          .integer('Quantity must be a whole number')
+          .min(1, 'Quantity must be at least 1')
+          .test('available-stock', 'Cannot sell more than current stock', (value) => {
+            if (!stockModal || stockModal.type !== 'outgoing' || !value) {
+              return true
+            }
 
-        return Number(value) <= stockModal.product.stock
-      })
-      .required('Quantity is required'),
-  })
+            return Number(value) <= stockModal.product.stock
+          })
+          .required('Quantity is required'),
+      }),
+    [stockModal],
+  )
 
   const addActivity = (type, details) => {
     setActivityLog((currentLog) => [createActivity(type, details), ...currentLog.slice(0, 19)])
@@ -299,8 +307,12 @@ function ProductTable() {
           <tbody>
             {filteredProducts.map((product) => (
               <tr key={product.id}>
-                <td data-label="Product ID" className="sku-cell">{product.id}</td>
-                <td data-label="Name" className="name-cell">{product.name}</td>
+                <td data-label="Product ID" className="sku-cell">
+                  {product.id}
+                </td>
+                <td data-label="Name" className="name-cell">
+                  {product.name}
+                </td>
                 <td data-label="Category">
                   <span className="category-pill">{product.category}</span>
                 </td>
@@ -325,6 +337,7 @@ function ProductTable() {
                       type="button"
                       className="text-action sell-action"
                       onClick={() => setStockModal({ product, type: 'outgoing' })}
+                      disabled={product.stock === 0}
                     >
                       Sell
                     </button>
@@ -367,7 +380,12 @@ function ProductTable() {
                       : 'A unique Product ID will be generated automatically.'}
                   </p>
                 </div>
-                <button type="button" className="close-button" onClick={closeProductModal}>
+                <button
+                  type="button"
+                  className="close-button"
+                  onClick={closeProductModal}
+                  aria-label="Close product form"
+                >
                   x
                 </button>
               </div>
@@ -427,7 +445,12 @@ function ProductTable() {
                   <h2 id="category-modal-title">Add category</h2>
                   <p>Create a custom product category.</p>
                 </div>
-                <button type="button" className="close-button" onClick={() => setIsCategoryModalOpen(false)}>
+                <button
+                  type="button"
+                  className="close-button"
+                  onClick={() => setIsCategoryModalOpen(false)}
+                  aria-label="Close category form"
+                >
                   x
                 </button>
               </div>
@@ -462,7 +485,12 @@ function ProductTable() {
                   </h2>
                   <p>{stockModal.product.name} currently has {stockModal.product.stock} units.</p>
                 </div>
-                <button type="button" className="close-button" onClick={() => setStockModal(null)}>
+                <button
+                  type="button"
+                  className="close-button"
+                  onClick={() => setStockModal(null)}
+                  aria-label="Close stock form"
+                >
                   x
                 </button>
               </div>

@@ -1,6 +1,8 @@
 export const PRODUCTS_STORAGE_KEY = 'stockflow-products'
 export const CATEGORIES_STORAGE_KEY = 'stockflow-categories'
 export const HISTORY_STORAGE_KEY = 'stockflow-stock-history'
+export const THEME_STORAGE_KEY = 'stockflow-theme'
+export const ACTIVE_PAGE_STORAGE_KEY = 'stockflow-active-page'
 
 export const defaultCategories = ['Electronics', 'Apparel', 'Home & Kitchen', 'Groceries']
 
@@ -40,7 +42,7 @@ export function generateProductId(products) {
 
 export function createActivity(type, details = {}) {
   return {
-    id: `${type}-${Date.now()}`,
+    id: `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     type,
     timestamp: new Date().toISOString(),
     ...details,

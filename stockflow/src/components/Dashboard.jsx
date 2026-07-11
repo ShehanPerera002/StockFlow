@@ -34,14 +34,17 @@ function Dashboard() {
     ]
   }, [categories.length, products])
 
-  const categoryCounts = useMemo(
-    () =>
-      categories.map((category) => ({
-        name: category,
-        count: products.filter((product) => product.category === category).length,
-      })),
-    [categories, products],
-  )
+  const categoryCounts = useMemo(() => {
+    const countByCategory = products.reduce((counts, product) => {
+      counts[product.category] = (counts[product.category] || 0) + 1
+      return counts
+    }, {})
+
+    return categories.map((category) => ({
+      name: category,
+      count: countByCategory[category] || 0,
+    }))
+  }, [categories, products])
 
   return (
     <section className="dashboard-shell">
