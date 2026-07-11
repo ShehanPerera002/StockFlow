@@ -1,7 +1,8 @@
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { useMemo, useState } from 'react'
 import * as Yup from 'yup'
-import { defaultCategories, defaultProducts, formatLkr, generateProductId } from '../utils/inventory'
+import useLocalStorage from '../hooks/useLocalStorage'
+import { PRODUCTS_STORAGE_KEY, defaultCategories, defaultProducts, formatLkr, generateProductId } from '../utils/inventory'
 import './ProductTable.css'
 
 const productInitialValues = { name: '', category: '', price: '', stock: '' }
@@ -29,7 +30,7 @@ const productSchema = Yup.object({
 })
 
 function ProductTable() {
-  const [products, setProducts] = useState(defaultProducts)
+  const [products, setProducts] = useLocalStorage(PRODUCTS_STORAGE_KEY, defaultProducts)
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [stockFilter, setStockFilter] = useState('all')
