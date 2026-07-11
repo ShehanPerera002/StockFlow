@@ -1,25 +1,42 @@
 import logo from '../assets/logo.webp'
 import './Navbar.css'
 
-function Navbar({ isDark, onToggleTheme }) {
+function Navbar({ activePage, isDark, onNavigate, onToggleTheme }) {
   return (
     <header className="app-header">
-      <div className="brand">
+      <button type="button" className="brand" onClick={() => onNavigate('home')}>
         <img src={logo} alt="StockFlow logo" className="brand-logo" />
         <span className="brand-title">StockFlow</span>
-      </div>
+      </button>
+
+      <nav className="main-nav" aria-label="Primary navigation">
+        <button
+          type="button"
+          className={activePage === 'home' ? 'active' : ''}
+          onClick={() => onNavigate('home')}
+        >
+          Home
+        </button>
+        <button
+          type="button"
+          className={activePage === 'products' ? 'active' : ''}
+          onClick={() => onNavigate('products')}
+        >
+          Products
+        </button>
+      </nav>
 
       <button
         type="button"
         className="theme-switch"
         onClick={onToggleTheme}
-        aria-label={isDark ? 'Switch to day mode' : 'Switch to night mode'}
+        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
         aria-pressed={isDark}
       >
         <span className="switch-track">
           <span className="switch-thumb">
-            <span className="switch-icon sun-icon">☀</span>
-            <span className="switch-icon moon-icon">☾</span>
+            <span className="switch-icon sun-icon">L</span>
+            <span className="switch-icon moon-icon">D</span>
           </span>
         </span>
       </button>

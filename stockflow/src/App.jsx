@@ -3,14 +3,19 @@ import Navbar from './components/Navbar'
 import './App.css'
 
 function App() {
-  const [isDark, setIsDark] = useState(true)
-
+  const [activePage, setActivePage] = useState('home')
+  const [isDark, setIsDark] = useState(false)
   const themeClassName = isDark ? 'theme-dark' : 'theme-light'
-  const toggleTheme = () => setIsDark((previousValue) => !previousValue)
 
   return (
     <div className={`app-shell ${themeClassName}`}>
-      <Navbar isDark={isDark} onToggleTheme={toggleTheme} />
+      <Navbar
+        activePage={activePage}
+        isDark={isDark}
+        onNavigate={setActivePage}
+        onToggleTheme={() => setIsDark((previousValue) => !previousValue)}
+      />
+      <main className="main-content" />
     </div>
   )
 }

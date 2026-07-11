@@ -1,31 +1,39 @@
 .app-shell {
-  --bg: #020617;
-  --surface: #0f172a;
-  --text: #f8fafc;
-  --switch-track: #111827;
-  --switch-thumb: #f8fafc;
-  --switch-sun: #fbbf24;
-  --switch-moon: #0f172a;
+  --bg: #f8fafc;
+  --panel-bg: #ffffff;
+  --panel-text: #101828;
+  --muted: #64748b;
+  --line: #d8e0eb;
+  --soft-bg: #f8fafc;
+  --shadow-card: 0 8px 22px rgba(15, 23, 42, 0.06);
+  --shadow-control: 0 2px 8px rgba(15, 23, 42, 0.08);
+  --switch-track: #dbeafe;
+  --switch-thumb: #0f172a;
+  --switch-sun: #f59e0b;
+  --switch-moon: #f8fafc;
   min-height: 100vh;
   padding: 16px;
   background: var(--bg);
-  color: var(--text);
+  color: var(--panel-text);
 }
 
 .theme-dark {
+  --bg: #07111f;
+  --panel-bg: #111827;
+  --panel-text: #f8fafc;
+  --muted: #cbd5e1;
+  --line: #334155;
+  --soft-bg: #1f2937;
+  --shadow-card: 0 8px 22px rgba(0, 0, 0, 0.18);
+  --shadow-control: 0 2px 8px rgba(0, 0, 0, 0.2);
   --switch-track: #1f2937;
   --switch-thumb: #f8fafc;
   --switch-sun: #fbbf24;
   --switch-moon: #0f172a;
 }
 
-.theme-light {
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --text: #0f172a;
-  --switch-track: #dbeafe;
-  --switch-thumb: #0f172a;
-  --switch-sun: #f59e0b;
-  --switch-moon: #f8fafc;
+.main-content {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 0;
 }
-
